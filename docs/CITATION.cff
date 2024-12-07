@@ -1,0 +1,13 @@
+cff-version: 1.2.0
+message: "If you think this software is helpful, please cite it as
+  follows."
+title: "Computing the maximal path homology of directed acyclic graph"
+type: software
+authors:
+  - given-names: Zhengtong
+    family-names: Zhu
+  - given-names: Zhiyi
+    family-names: Chi
+repository-code: 'https://github.com/zhengtongzhu/DAG_MaxPathHomology'
+version: 1.0.0
+date-released: '2024-12-07'

@@ -1,0 +1,146 @@
+# MaxPathHomology
+- Zhengtong Zhu, Zhiyi Chi, "*Recursive Computation of Path Homology for Stratified Digraphs*".
+
+This Python script is an implementation of the above paper that recursively computes the maximal (reduced) path homology of an unweighted stratified graph or unweighted directed acyclic graph (DAG).
+
+## Installation
+To get started with this project, follow the steps below to install the necessary dependencies:
+
+### Prerequisites
+- **Python**: Ensure that Python 3.8 or higher is installed. You can check your Python version by running:
+    ```bash
+    python --version
+    ```
+- **Clone the repository**: Clone the project to your local device using:
+    ```bash
+    git clone git@github.com:zhengtongzhu/DAG_MaxPathHomology.git
+    cd DAG_MaxPathHomology
+    ```
+- **Install dependencies**:
+    ```bash
+    pip install -r requirements.txt
+    ```
+- **Run the project**:
+    ```bash
+    python recursive_algorithm.py
+    ```
+
+    You will see the following output from the test example:
+    ```python
+    lp:2,
+    dim:3,
+    basis:[
+    [(-a0 + a1)*(b2 - b3)*(c2 - c3), 
+     (-b0 + b1)*(c0 - c1)*(d1 - d0)], 
+    [(-b4 + b5)*(-c4 + c5)*(d2 - d3)]
+    ]
+    ```
+
+## dag_preprocess.py
+The `graph_preprocess.py` includes functions and algorithms to compute `l(G)` and $G_*$ for any unweighted DAG `G` without multi-edge, which are introduced in section 5.2 of the paper.
+
+### Example Usage
+Consider the following `edgelist` of a DAG `G`:
+
+```python
+edgelist = [ ('a0', 'b2'), ('a0', 'b3'), ('a1', 'b2'), ('a1', 'b3'), ('b4', 'c4'), ('b4', 'c5'), ('b5', 'c4'), 
+             ('b5', 'c2'), ('b5', 'c2'), ('b5', 'c3'), ('b1', 'c3'), ('b0', 'c0'), ('b0', 'c1'), ('b1', 'c1'), 
+             ('c4', 'd2'), ('c4', 'd3'), ('c5', 'd2'), ('c5', 'd3'), ('c6', 'd0'), ('c6', 'd1'), ('c7', 'd1')]
+```
+
+each tuple `(a, b)` in this edgelist represents a directed unweighted edge in `G` from node `a` to node `b`. The `dag_process` function first check if the DAG `G` contains multi-edges or has a loop (based on [NetworkX](https://networkx.org/)):
+
+```python
+if len(edgelist) != len(set(edgelist)):
+    raise ValueError("Error: The graph has duplicate edges.")
+G = nx.DiGraph(edgelist)
+if not nx.is_directed_acyclic_graph(G):
+    raise ValueError("Error: The graph must be a DAG.")
+```
+
+then compute the longest path length of `G` (by [dag_longest_path_length](https://networkx.org/documentation/stable/reference/algorithms/generated/networkx.algorithms.dag.dag_longest_path_length.html#networkx.algorithms.dag.dag_longest_path_length) from [NetworkX](https://networkx.org/)):
+
+```python
+lp = nx.dag_longest_path_length(G)
+```
+
+The `prune` and $G_*$-algorithm (`lp_edgelist`) are then repeated until all nodes are removed, or these algorithms do not remove any edges. The repetition of the `prune` and `lp_edgelist` provides a set of weakly connected components `{G_i}`. These `{G_i}` are stratified graphs, and computing the direct sum of the maximal path homology of all `G_i` is equivalent to computing the maximal path homology of `G`, which are guaranteed by Corollary 3.5 and Proposition 3.7 of the paper.
+
+The `dag_process` returns 5 components of all `G_i`:
+
+```python
+subgraph_dict, node_counts, lp, num_graph, graph_list = dag_process(edgelist)
+```
+
+- The $i^{th}$ element of `subgraph_dict` is a dictionary represents `G_i`, where each key is a layer index (start from `0`) and the value corresponding to the key is the set of nodes in that layer. For example, in the `edgelist` above, the `subgraph_dict` is:
+
+```python
+subgraph_dict = [
+    {0: {'d0', 'c2', 'd1', 'c3'}, 1: {'b2', 'c1', 'b3', 'c0'}, 2: {'b1', 'b0', 'a1', 'a0'}}, 
+    {0: {'b4', 'b5'}, 1: {'c4', 'c5'}, 2: {'d3', 'd2'}}
+    ]
+```
+`c2` is a node in `G_0`'s `0`th layer and `c4` is a node in `G_1`'s `1`st layer.
+
+- The `i`$^{th}$ element of `node_counts` represents the number of nodes in different layer of `G_i`. From the `subgraph_dict` above we know that
+
+```python
+node_counts = [[4, 4, 4], 
+               [2, 2, 2]]
+```
+where `[4, 4, 4]` means `G_0` has `4` nodes in layer `0`, `4` nodes in layer `1`, and `4` nodes in layer `2`.
+
+- `lp` is the longest path length of `G` as described above (`lp = l(G)`). Here `lp = 2`.
+- `num_graph` is the cardinality of `{G_i}`. Here `num_graph = 2`.
+- `graph_list` is a list where each element `G_i` is stored as an instance of the `nx.DiGraph` class.
+
+## recursive_algrithm.py
+The `recursive_algrithm.py` includes the main algorithm `max_path_homology` to compute the maximal path homology for an unweighted stratified graph. Along with `graph_preprocess.py`, it also works for unweighted DAGs.
+
+The `max_path_homology` returns `lp`, `sum_dim` and `basis`.
+```python
+lp, dim, basis = max_path_homology(edgelist, calculate_basis)
+```
+Here:
+- `lp=l(G)` is the longest path length of `G`.
+- `dim` is the sum of the Betti Numbers of the `lp`-dimentional (maximal) path homologies of all `G_i`.
+- If the input `calculate_basis == True`, then `basis` returns a basis of the `lp`-dimensional (maximal) reduced path homology of all `G_i`, otherwise it returns `None`.
+
+For the `edgelist` above, if `calculate_basis == True`:
+```python
+lp = 2
+sum_dim = 3
+basis = [
+    [(-a0 + a1)*(b2 - b3)*(c2 - c3), 
+     (b0 - b1)*((-c0 + c1)*(-c3 + d0) + (c0 - c1)*(-c3 + d1))], 
+     [(-b4 + b5)*(-c4 + c5)*(d2 - d3)]
+    ]
+```
+## general_algorithm.py
+The `general_algorithm.py` is based on an implementation from the following project:
+
+Carranza, D., Doherty, B., Kapulkin, K., Opie, M., Sarazola, M., & Wong, L. Z. (2022). *Python script for computing path homology of digraphs* (Version 1.0.0) [Computer software]. https://github.com/sheaves/path_homology.
+
+This script implements a general algorithm for computing reduced path homology. If you use this project or its comparative implementation in your work, please also cite the above project to acknowledge their contributions.
+
+## other codes
+`maxpph.py` contains a function for creating a decreasing persistence path homology plot, as described in Section 6.2 of the paper.
+
+`experiment_func.py`, `stratified_gamma_1_2_3.py` and `stratified_gamma_4_5.py` include functions and simulations. Please refer to section 6.1 of the paper for a more detailed discussion.
+
+`maxph_matrix.py` contains the functions for matrix calculations.
+
+## Citation
+If you find this project useful, please cite it as follows:
+
+### BibTeX
+```bibtex
+@software{Zhu_Computing_the_maximal_2024,
+author = {Zhu, Zhengtong and Chi, Zhiyi},
+month = dec,
+title = {{Computing the maximal path homology of directed acyclic graph}},
+url = {https://github.com/zhengtongzhu/DAG_MaxPathHomology},
+version = {1.0.0},
+year = {2024}
+}
+```
