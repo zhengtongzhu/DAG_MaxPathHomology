@@ -1,5 +1,5 @@
 # MaxPathHomology
-- Zhengtong Zhu, Zhiyi Chi, "*Recursive Computation of Path Homology for Stratified Digraphs*".
+Zhu, Z. and Chi, Z. (2024). "*Recursive Computation of Path Homology for Stratified Digraphs*".
 
 This Python script is an implementation of the above paper that recursively computes the maximal (reduced) path homology of an unweighted stratified graph or unweighted directed acyclic graph (DAG).
 
@@ -11,7 +11,7 @@ To get started with this project, follow the steps below to install the necessar
     ```bash
     python --version
     ```
-- **Clone the repository**: Clone the project to your local device using:
+- **Clone the repository**:
     ```bash
     git clone git@github.com:zhengtongzhu/DAG_MaxPathHomology.git
     cd DAG_MaxPathHomology
@@ -37,10 +37,10 @@ To get started with this project, follow the steps below to install the necessar
     ```
 
 ## dag_preprocess.py
-The `graph_preprocess.py` includes functions and algorithms to compute `l(G)` and $G_*$ for any unweighted DAG `G` without multi-edge, which are introduced in section 5.2 of the paper.
+The `graph_preprocess.py` module provides functions to compute `l(G)` and the stratified decomposition $G_*$ for a given unweighted DAG without multiple edges. These methods are described in Section 5.2 of the paper.
 
 ### Example Usage
-Consider the following `edgelist` of a DAG `G`:
+Consider a DAG `G` with the following `edgelist`:
 
 ```python
 edgelist = [ ('a0', 'b2'), ('a0', 'b3'), ('a1', 'b2'), ('a1', 'b3'), ('b4', 'c4'), ('b4', 'c5'), ('b5', 'c4'), 
@@ -133,7 +133,6 @@ This script implements a general algorithm for computing reduced path homology. 
 ## Citation
 If you find this project useful, please cite it as follows:
 
-### BibTeX
 ```bibtex
 @software{Zhu_Computing_the_maximal_2024,
 author = {Zhu, Zhengtong and Chi, Zhiyi},
