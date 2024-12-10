@@ -48,8 +48,7 @@ edgelist = [('a0', 'b2'), ('a0', 'b3'), ('a1', 'b2'), ('a1', 'b3'), ('b4', 'd1')
             ('b4', 'c5'), ('b5', 'c4'), ('b5', 'c5'), ('b0', 'c2'), ('b0', 'c3'), 
             ('b1', 'c2'), ('b1', 'c3'), ('b4', 'c2'), ('b4', 'c3'), ('b5', 'c2'), 
             ('b5', 'c3'), ('c0', 'd0'), ('c0', 'd1'), ('c1', 'd0'), ('c1', 'd1'), 
-            ('c4', 'd2'), ('c4', 'd3'), ('c5', 'd2'), ('c5', 'd3'), ('c6', 'd2'), 
-            ('c6', 'd3'), ('c7', 'd2'), ('c7', 'd3')]
+            ('c4', 'd2'), ('c4', 'd3'), ('c5', 'd2'), ('c5', 'd3')]
 ```
 
 each tuple `(a, b)` in this edgelist represents a directed unweighted edge in `G` from node `a` to node `b`. The `dag_process` function first check if the DAG `G` contains multi-edges or has a loop (based on [NetworkX](https://networkx.org/)):
@@ -80,11 +79,11 @@ subgraph_dict, node_counts, lp, num_graph, graph_list = dag_process(edgelist)
 
 ```python
 subgraph_dict = [
-    {0: {'c2', 'd1', 'd0', 'c3'}, 1: {'b3', 'c1', 'c0', 'b2'}, 2: {'a1', 'b1', 'b0', 'a0'}}，
+    {0: {'b1', 'a1', 'b0', 'a0'}, 1: {'c1', 'b2', 'b3', 'c0'}, 2: {'c2', 'c3', 'd1', 'd0'}},
     {0: {'b5', 'b4'}, 1: {'c5', 'c4'}, 2: {'d3', 'd2'}}
     ]
 ```
-`c2` is a node in `G_0`'s `0`th layer and `c4` is a node in `G_1`'s `1`st layer.
+`c2` is a node in `G_0`'s `2`nd layer and `c4` is a node in `G_1`'s `1`st layer.
 
 - The `i`$^{th}$ element of `node_counts` represents the number of nodes in different layer of `G_i`. From the `subgraph_dict` above we know that
 
