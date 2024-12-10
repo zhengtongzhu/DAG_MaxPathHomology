@@ -6,7 +6,6 @@ This Python script is an implementation of the above paper that recursively comp
 ## Installation
 To get started with this project, follow the steps below to install the necessary dependencies:
 
-### Prerequisites
 - **Python**: Ensure that Python 3.8 or higher is installed. You can check your Python version by running:
     ```bash
     python --version
