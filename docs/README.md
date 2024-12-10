@@ -123,15 +123,15 @@ Carranza, D., Doherty, B., Kapulkin, K., Opie, M., Sarazola, M., & Wong, L. Z. (
 
 This script implements a general algorithm for computing reduced path homology. If you use this project or its comparative implementation in your work, please also cite the above project to acknowledge their contributions.
 
-## other codes
-`maxpph.py` contains a function for creating a decreasing persistence path homology plot, as described in Section 6.2 of the paper.
+## Other Modules
+`maxpph.py`: Produces a decreasing persistence path homology plot (Section 6.2 of the paper).
 
-`experiment_func.py`, `stratified_gamma_1_2_3.py` and `stratified_gamma_4_5.py` include functions and simulations. Please refer to section 6.1 of the paper for a more detailed discussion.
+`experiment_func.py`, `stratified_gamma_1_2_3.py` and `stratified_gamma_4_5.py`: Implement additional functions and simulations discussed in Section 6.1 of the paper.
 
-`maxph_matrix.py` contains the functions for matrix calculations.
+`maxph_matrix.py`: Contains functions for matrix operations.
 
 ## Citation
-If you find this project useful, please cite it as follows:
+If you find this code useful, please cite it using the following BibTeX entry:
 
 ```bibtex
 @software{Zhu_Computing_the_maximal_2024,
