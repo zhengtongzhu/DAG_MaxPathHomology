@@ -12,7 +12,7 @@ To get started with this project, follow the steps below to install the necessar
     ```
 - **Clone the repository**:
     ```bash
-    git clone git@github.com:zhengtongzhu/DAG_MaxPathHomology.git
+    git clone https://github.com/zhengtongzhu/DAG_MaxPathHomology.git
     cd DAG_MaxPathHomology
     ```
 - **Install dependencies**:
