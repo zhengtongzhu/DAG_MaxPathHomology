@@ -26,13 +26,13 @@ To get started with this project, follow the steps below to install the necessar
 
     You will see the following output from the test example:
     ```python
-    lp:2,
-    dim:3,
-    basis:[
-    [(-a0 + a1)*(b2 - b3)*(c2 - c3), 
-     (-b0 + b1)*(c0 - c1)*(d1 - d0)], 
-    [(-b4 + b5)*(-c4 + c5)*(d2 - d3)]
-    ]
+    lp: 2,
+    dim: 3,
+    basis: [
+        [(-b0 + b1)*(-c0 + c1)*(-d0 + d1), 
+        (-a0 + a1)*((-b2 + b3)*(c3 - d0) + (b2 - b3)*(c2 - d0))], 
+        [(b4 - b5)*(-c4 + c5)*(-d2 + d3)]
+        ]
     ```
 
 ## dag_preprocess.py
@@ -42,9 +42,9 @@ The `graph_preprocess.py` module provides functions to compute `l(G)` and the st
 Consider a DAG `G` with the following `edgelist`:
 
 ```python
-edgelist = [ ('a0', 'b2'), ('a0', 'b3'), ('a1', 'b2'), ('a1', 'b3'), ('b4', 'c4'), ('b4', 'c5'), ('b5', 'c4'), 
-             ('b5', 'c2'), ('b5', 'c2'), ('b5', 'c3'), ('b1', 'c3'), ('b0', 'c0'), ('b0', 'c1'), ('b1', 'c1'), 
-             ('c4', 'd2'), ('c4', 'd3'), ('c5', 'd2'), ('c5', 'd3'), ('c6', 'd0'), ('c6', 'd1'), ('c7', 'd1')]
+edgelist = [('a0', 'b2'), ('a0', 'b3'), ('a1', 'b2'), ('a1', 'b3'), ('b4', 'c4'), ('b4', 'c5'), ('b5', 'c4'), 
+            ('b5', 'c2'), ('b5', 'c2'), ('b5', 'c3'), ('b1', 'c3'), ('b0', 'c0'), ('b0', 'c1'), ('b1', 'c1'), 
+            ('c4', 'd2'), ('c4', 'd3'), ('c5', 'd2'), ('c5', 'd3'), ('c6', 'd0'), ('c6', 'd1'), ('c7', 'd1')]
 ```
 
 each tuple `(a, b)` in this edgelist represents a directed unweighted edge in `G` from node `a` to node `b`. The `dag_process` function first check if the DAG `G` contains multi-edges or has a loop (based on [NetworkX](https://networkx.org/)):
@@ -75,7 +75,7 @@ subgraph_dict, node_counts, lp, num_graph, graph_list = dag_process(edgelist)
 
 ```python
 subgraph_dict = [
-    {0: {'d0', 'c2', 'd1', 'c3'}, 1: {'b2', 'c1', 'b3', 'c0'}, 2: {'b1', 'b0', 'a1', 'a0'}}, 
+    {0: {'d0', 'c2', 'd1', 'c3'}, 1: {'b2', 'c1', 'b3', 'c0'}, 2: {'b1', 'b0', 'a1', 'a0'}},
     {0: {'b4', 'b5'}, 1: {'c4', 'c5'}, 2: {'d3', 'd2'}}
     ]
 ```
@@ -84,8 +84,10 @@ subgraph_dict = [
 - The `i`$^{th}$ element of `node_counts` represents the number of nodes in different layer of `G_i`. From the `subgraph_dict` above we know that
 
 ```python
-node_counts = [[4, 4, 4], 
-               [2, 2, 2]]
+node_counts = [
+    [4, 4, 4], 
+    [2, 2, 2]
+    ]
 ```
 where `[4, 4, 4]` means `G_0` has `4` nodes in layer `0`, `4` nodes in layer `1`, and `4` nodes in layer `2`.
 
@@ -111,8 +113,8 @@ lp = 2
 sum_dim = 3
 basis = [
     [(-a0 + a1)*(b2 - b3)*(c2 - c3), 
-     (b0 - b1)*((-c0 + c1)*(-c3 + d0) + (c0 - c1)*(-c3 + d1))], 
-     [(-b4 + b5)*(-c4 + c5)*(d2 - d3)]
+    (b0 - b1)*((-c0 + c1)*(-c3 + d0) + (c0 - c1)*(-c3 + d1))], 
+    [(-b4 + b5)*(-c4 + c5)*(d2 - d3)]
     ]
 ```
 ## general_algorithm.py
