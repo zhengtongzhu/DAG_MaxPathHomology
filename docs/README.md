@@ -67,7 +67,7 @@ then compute the longest path length of `G` (by [dag_longest_path_length](https:
 lp = nx.dag_longest_path_length(G)
 ```
 
-The `prune` and $G_*$-algorithm (`lp_edgelist`) are then repeated until all nodes are removed, or these algorithms do not remove any edges. The repetition of the `prune` and `lp_edgelist` provides a set of weakly connected components `{G_i}`. These `{G_i}` are stratified graphs, and computing the direct sum of the maximal path homology of all `G_i` is equivalent to computing the maximal path homology of `G`, which are guaranteed by Corollary 3.5 and Proposition 3.7 of the paper.
+We repeatedly prune the graph using `prune` and $G_*$-algorithm (`lp_edgelist`) until the graph structure can no longer be simplified. The repetition of the `prune` and `lp_edgelist` provides a set of weakly connected components `{G_i}`. These `{G_i}` are stratified graphs, and computing the direct sum of the maximal path homology of all `G_i` is equivalent to computing the maximal path homology of `G`, which are guaranteed by Corollary 3.5 and Proposition 3.7 of the paper.
 
 The `dag_process` returns 5 components of all `G_i`:
 
