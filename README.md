@@ -140,7 +140,7 @@ The `max_path_homology` returns `lp`, `sum_dim` and `basis`.
 lp, dim, basis = max_path_homology(edgelist, calculate_basis)
 ```
 Here:
-- `lp=l(G)` is the longest path length of `G`.
+- `lp = l(G)` is the longest path length of `G`.
 - `dim` is the sum of the Betti Numbers of the `lp`-dimentional (maximal) path homologies of all `G_i`.
 - If the input `calculate_basis == True`, then `basis` returns a basis of the `lp`-dimensional (maximal) reduced path homology of all `G_i`, otherwise it returns `None`.
 
