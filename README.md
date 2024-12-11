@@ -53,7 +53,7 @@ edgelist = [('a0', 'b2'), ('a0', 'b3'), ('a1', 'b2'), ('a1', 'b3'), ('b4', 'd1')
 
 each tuple `(a, b)` in this edgelist represents a directed unweighted edge in `G` from node `a` to node `b`. Here's a visualization of `G`:
 
-<img src="output\example_G.pdf" width="70%" style="display: block; margin: auto;" />
+<img src="figures\example_G.pdf" width="70%" style="display: block; margin: auto;" />
 
 The `dag_process` function first check if the DAG `G` contains multi-edges or has a loop (based on [NetworkX](https://networkx.org/)):
 
