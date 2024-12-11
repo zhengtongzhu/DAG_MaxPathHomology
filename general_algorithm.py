@@ -1,4 +1,5 @@
 # The following functions are based on an implementation from the following open-source project:
+# Carranza, D., Doherty, B., Kapulkin, K., Opie, M., Sarazola, M., & Wong, L. Z. (2022). Python script for computing path homology of digraphs (Version 1.0.0) [Computer software]
 # https://github.com/sheaves/path_homology, under the GNU General Public License.
 
 import networkx as nx
