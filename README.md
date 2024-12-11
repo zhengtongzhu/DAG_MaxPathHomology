@@ -144,7 +144,7 @@ Here:
 - `dim` is the sum of the Betti Numbers of the `lp`-dimentional (maximal) path homologies of all `G_i`.
 - If the input `calculate_basis == True`, then `basis` returns a basis of the `lp`-dimensional (maximal) reduced path homology of all `G_i`, otherwise it returns `None`.
 
-For the `edgelist` above, if `calculate_basis == True`:
+If `calculate_basis == True`, the outputs are:
 ```python
 lp = 2
 sum_dim = 3
