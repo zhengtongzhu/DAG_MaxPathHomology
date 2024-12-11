@@ -92,11 +92,11 @@ The visual representation of these two components is shown below:
 
 <div style="display: flex; justify-content: space-around; align-items: center;">
   <div style="width: 50%; text-align: center;">
-    <img src="figures/example_G_0.png" style="width: 100%;" alt="G_0" />
+    <img src="figures/example_G_0.png" style="width: 50%;" alt="G_0" />
     <p> G_0</p>
   </div>
   <div style="width: 50%; text-align: center;">
-    <img src="figures/example_G_1.png" style="width: 100%;" alt="G_1" />
+    <img src="figures/example_G_1.png" style="width: 50%;" alt="G_1" />
     <p> G_1</p>
   </div>
 </div>
