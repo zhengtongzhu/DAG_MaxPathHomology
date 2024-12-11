@@ -51,7 +51,7 @@ edgelist = [('a0', 'b2'), ('a0', 'b3'), ('a1', 'b2'), ('a1', 'b3'), ('b4', 'd1')
             ('c4', 'd2'), ('c4', 'd3'), ('c5', 'd2'), ('c5', 'd3'), ('a2', 'b4')]
 ```
 
-each tuple `(a, b)` in this edgelist represents a directed unweighted edge in `G` from node `a` to node `b`. Here's a visualization of `G`:
+each tuple `(a, b)` in this edgelist represents a directed unweighted edge in `G` from node `a` to node `b`. Below is a visualization of `G`:
 
 <img src="figures\example_G.png" width="80%" style="display: block; margin: auto;" />
 
@@ -78,26 +78,29 @@ We repeatedly prune the graph using `prune` and $G_*$-algorithm (`lp_edgelist`) 
 
 The original graph `G` is splitted into two weakly connected components:
 ```python
-G_0: [('a0', 'b2'), ('a0', 'b3'), ('a1', 'b2'), ('a1', 'b3'), ('a1', 'c1'),
-      ('b2', 'c2'), ('b2', 'c3'), ('b3', 'c2'), ('b3', 'c3'),
-      ('b0', 'c0'), ('b0', 'c1'), ('b1', 'c0'), ('b1', 'c1'),
-      ('c0', 'd0'), ('c0', 'd1'), ('c1', 'd0'), ('c1', 'd1')]
+G_0 contains the following edges: 
+    [('a0', 'b2'), ('a0', 'b3'), ('a1', 'b2'), ('a1', 'b3'), ('a1', 'c1'),
+     ('b2', 'c2'), ('b2', 'c3'), ('b3', 'c2'), ('b3', 'c3'),
+     ('b0', 'c0'), ('b0', 'c1'), ('b1', 'c0'), ('b1', 'c1'),
+     ('c0', 'd0'), ('c0', 'd1'), ('c1', 'd0'), ('c1', 'd1')]
 
-G_1: [('b4', 'c4'), ('b4', 'c5'), ('b5', 'c4'), ('b5', 'c5'),
-      ('c4', 'd2'), ('c4', 'd3'), ('c5', 'd2'), ('c5', 'd3')]
+G_1 contains the following edges: 
+    [('b4', 'c4'), ('b4', 'c5'), ('b5', 'c4'), ('b5', 'c5'),
+     ('c4', 'd2'), ('c4', 'd3'), ('c5', 'd2'), ('c5', 'd3')]
 ```
-As shown below:
+The visual representation of these two components is shown below:
 
-<div style="display: flex; justify-content: space-around; align-items: center; text-align: center;">
-  <div>
-    <img src="figures/example_G_0.png" width="45%" alt="Visualization of G_0" />
-    <p>G_0</p>
+<div style="display: flex; justify-content: space-around; align-items: center;">
+  <div style="width: 49%; text-align: center;">
+    <img src="figures/example_G_0.png" style="width: 100%;" alt="G_0" />
+    <p> G_0</p>
   </div>
-  <div>
-    <img src="figures/example_G_1.png" width="45%" alt="Visualization of G_1" />
-    <p>G_1</p>
+  <div style="width: 49%; text-align: center;">
+    <img src="figures/example_G_1.png" style="width: 100%;" alt="G_1" />
+    <p> G_1</p>
   </div>
 </div>
+
 
 The `dag_process` returns 5 components of all `G_i`:
 
