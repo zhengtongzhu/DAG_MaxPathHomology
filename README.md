@@ -27,7 +27,7 @@ To get started with this project, follow the steps below to install the necessar
     You will see the following output from the test example:
     ```python
     lp: 2,
-    dim: 3,
+    sum_dim: 3,
     basis: [
         [(-b0 + b1)*((-c0 + c1)*(-c3 + d1) + (c0 - c1)*(-c3 + d0)), 
         (-a0 + a1)*(-b2 + b3)*(c2 - c3)], 
@@ -137,11 +137,11 @@ The `recursive_algrithm.py` includes the main algorithm `max_path_homology` to c
 
 The `max_path_homology` returns `lp`, `sum_dim` and `basis`.
 ```python
-lp, dim, basis = max_path_homology(edgelist, calculate_basis)
+lp, sum_dim, basis = max_path_homology(edgelist, calculate_basis)
 ```
 Here:
 - `lp = l(G)` is the longest path length of `G`.
-- `dim` is the sum of the Betti Numbers of the `lp`-dimentional (maximal) path homologies of all `G_i`.
+- `sum_dim` is the sum of the Betti Numbers of the `lp`-dimentional (maximal) path homologies of all `G_i`.
 - If the input `calculate_basis == True`, then `basis` returns a basis of the `lp`-dimensional (maximal) reduced path homology of all `G_i`, otherwise it returns `None`.
 
 If `calculate_basis == True`, the outputs are:

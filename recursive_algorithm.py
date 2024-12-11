@@ -94,5 +94,5 @@ if __name__ == "__main__":
                 ('b5', 'c2'), ('b5', 'c3'), ('c0', 'd0'), ('c0', 'd1'), ('c1', 'd0'), ('c1', 'd1'), ('c4', 'd2'), ('c4', 'd3'), 
                 ('c5', 'd2'), ('c5', 'd3')]
 
-    lp, dim, basis = max_path_homology(edgelist, calculate_basis = True)
-    print(f"lp:{lp},\ndim:{dim},\nbasis:{basis}\n")
+    lp, sum_dim, basis = max_path_homology(edgelist, calculate_basis = True)
+    print(f"lp:{lp},\nsum_dim:{sum_dim},\nbasis:{basis}\n")
