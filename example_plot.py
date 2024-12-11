@@ -56,7 +56,7 @@ nx.draw(
 )
 plt.title("Original Graph G", fontsize = 16, pad = 20)
 plt.tight_layout()
-#plt.savefig("example_G.pdf")
+plt.savefig("example_G.png")
 plt.show()
 plt.close()
 
@@ -105,7 +105,7 @@ nx.draw(
 )
 plt.title("G_0", fontsize = 16, pad = 20)
 plt.tight_layout()
-#plt.savefig("G_0.pdf")
+plt.savefig("example_G_0.png")
 plt.show()
 plt.close()
 
@@ -151,6 +151,6 @@ nx.draw(
 )
 plt.title("G_1", fontsize = 16, pad = 20)
 plt.tight_layout()
-#plt.savefig("G_1.pdf")
+plt.savefig("example_G_1.png")
 plt.show()
 plt.close()

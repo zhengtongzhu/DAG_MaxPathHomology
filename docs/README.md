@@ -51,7 +51,11 @@ edgelist = [('a0', 'b2'), ('a0', 'b3'), ('a1', 'b2'), ('a1', 'b3'), ('b4', 'd1')
             ('c4', 'd2'), ('c4', 'd3'), ('c5', 'd2'), ('c5', 'd3'), ('a2', 'b4')]
 ```
 
-each tuple `(a, b)` in this edgelist represents a directed unweighted edge in `G` from node `a` to node `b`. The `dag_process` function first check if the DAG `G` contains multi-edges or has a loop (based on [NetworkX](https://networkx.org/)):
+each tuple `(a, b)` in this edgelist represents a directed unweighted edge in `G` from node `a` to node `b`. Here's a visualization of `G`:
+
+![G](output/example_G.png)
+
+The `dag_process` function first check if the DAG `G` contains multi-edges or has a loop (based on [NetworkX](https://networkx.org/)):
 
 ```python
 if len(edgelist) != len(set(edgelist)):
@@ -69,8 +73,8 @@ lp = nx.dag_longest_path_length(G)
 
 We repeatedly prune the graph using `prune` and $G_*$-algorithm (`lp_edgelist`) until the graph structure can no longer be simplified. The repetition of the `prune` and `lp_edgelist` provides a set of weakly connected components `{G_i}`. These `{G_i}` are stratified graphs, and computing the direct sum of the maximal path homology of all `G_i` is equivalent to computing the maximal path homology of `G`, which are guaranteed by Corollary 3.5 and Proposition 3.7 of the paper. For the `edgelist` above, `10` edges are removed after pruning:
 
-- `(a2, b4)`: removed by `prune`.
-- `(b0, c2)`, `(b0, c3)`, `(b1, c2)`, `(b1, c3)`, `(b4, c2)`, `(b4, c3)`, `(b5, c2)`, `(b5, c3)`, `(b4, d1)`: removed by `lp_edgelist`.
+- `('a2', 'b4')`: removed by `prune`.
+- `('b0', 'c2')`, `('b0', 'c3')`, `('b1', 'c2')`, `('b1', 'c3')`, `('b4', 'c2')`, `('b4', 'c3')`, `('b5', 'c2')`, `('b5', 'c3')`, `('b4', 'd1')`: removed by `lp_edgelist`.
 
 The original graph `G` is splitted into two weakly connected components:
 ```python
