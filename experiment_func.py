@@ -10,7 +10,7 @@ from general_algorithm import R_path, H_path_R, edgelist_to_graph
 
 def random_stratified(nodes_per_layer: list[int], edges_between_layers: list[int], seed: int = None) -> list[tuple[str, str]]:
     """
-    Generate a random stratified (directed and acyclic without multi-edge) graph given the number of layers and nodes per layer.
+    Generate a random stratified (DAG without multi-edge) graph given the number of layers and nodes per layer.
     
     Args:
     nodes_per_layer (list of int): List of integers specifying the number of nodes in each layer.
@@ -54,8 +54,7 @@ def random_stratified(nodes_per_layer: list[int], edges_between_layers: list[int
 
 def compare_stratified(Rep_num: int, nodes_per_layer: list[int], densities: list[float], seed: int = None) -> None:
     """
-    Compares the time spent on the General and Recursive Algorithms for different edge densities.
-    Graphs are randomly generated stratified.
+    Compare the time spent on the General and Recursive Algorithms for random_stratified graphs with different edge densities.
 
     Args:
         Rep_num (int):                 Number of repetitions per edge density.
@@ -154,8 +153,7 @@ def compare_stratified(Rep_num: int, nodes_per_layer: list[int], densities: list
 
 def recursive_stratified(Rep_num: int, nodes_per_layer: list[int], densities: list[float], seed: int = None) -> None:
     """
-    Record and plot the time spent on the Recursive Algorithm for different edge densities.
-    Graphs are random stratified graphs.
+    Record and plot the time spent on the Recursive Algorithm for random stratified graphs with different edge densities.
 
     Args:
         Rep_num (int):                 Number of repetitions per edge density.
@@ -227,7 +225,7 @@ def random_dag(n: int, p:float, seed: int = None) -> list[tuple[str, str]]:
 
 def compare_dag(Rep_num: int, n: int, p: list[float], seed: int = None) -> None:
     """
-    Compares the time spent on the General and Recursive Algorithms for different edge densities.
+    Compares the time spent on the General and Recursive Algorithms for random DAGs with different edge densities.
     Graphs are random DAGs.
 
     Args:
@@ -321,9 +319,7 @@ def compare_dag(Rep_num: int, n: int, p: list[float], seed: int = None) -> None:
 
 def recursive_dag(Rep_num: int, n: int, p: list[float], seed: int = None) -> None:
     """
-    Record and plot the time spent on the Recursive Algorithm for different edge densities.
-
-    Graphs are random DAGs.
+    Record and plot the time spent on the Recursive Algorithm for random DAGs with different edge densities.
 
     Args:
         Rep_num (int):   Number of repetitions per edge density.

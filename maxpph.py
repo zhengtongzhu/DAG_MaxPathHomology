@@ -3,6 +3,7 @@ import random
 import matplotlib.pyplot as plt
 from experiment_func import random_stratified
 from recursive_algorithm import max_path_homology
+
 def persistent_homology(nodes_per_layer: list[int], edges_between_layers: list[int], seed: int = None) -> None:
     """
     Performs decreasing persistent homology plot on a random stratified graph given edge weights sampled from a uniform distribution.

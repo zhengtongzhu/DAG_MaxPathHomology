@@ -13,8 +13,8 @@ class Experiment2:
 if __name__ == '__main__':
 
     experiment_table = [
-    {"Rep_num": 200, "nodes_per_layer": [4, 10, 10, 10, 10], "seed": 1},
-    {"Rep_num": 200, "nodes_per_layer": [4, 10, 10, 10, 10, 5], "seed": 1}
+    {"Rep_num": 200, "nodes_per_layer": [4, 10, 10, 10], "seed": 1},
+    {"Rep_num": 200, "nodes_per_layer": [4, 10, 10, 5, 5], "seed": 1}
     ]
 
     for param in experiment_table:
