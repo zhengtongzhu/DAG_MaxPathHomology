@@ -3,7 +3,10 @@ import sympy as sp
 from maxph_matrix import rref_null, row_del, basis_mat, null_identity
 from dag_preprocess import dag_process
 
-def max_path_homology(edgelist: list[tuple[str, str]], calculate_basis: bool = True, iso_nodes: list[str] | None = None,) -> tuple[int, list[list[str]]]:
+def max_path_homology(edgelist: list[tuple[str, str]],
+                      *,
+                      iso_nodes: list[str] | None = None,
+                      calculate_basis: bool = True,) -> tuple[int, int, list[list[sp.Expr]] | None]:
     """
     This function computes the lp-dimensional path homology of the graph from the edge list, where lp is
     the maximum length of the longest path in the graph. A basis of the lp-dimensional path homology 
@@ -15,10 +18,10 @@ def max_path_homology(edgelist: list[tuple[str, str]], calculate_basis: bool = T
         calculate_basis (bool):           A flag indicating whether to calculate the basis of the null space. Default is True.
 
     Returns:
-        tuple[int, int, list[list[str]]], or tuple[int, int, str]:
+        tuple[int, int, list[list[sp.Expr]] | None]:
             lp (int):                        The order of the path homology group to be computed.
             sum_dim (int):                   The sum of the highest order of the path homology group across all subgraphs.
-            basis (list[list[str]] or None): A list of basis vectors if `calculate_basis` is True; otherwise, `None`.
+            basis (list[list[sp.Expr]] or None): A list of basis vectors if `calculate_basis` is True; otherwise, `None`.
     """
     subgraph_dict, N, lp, num_subgraphs, graph_list = dag_process(edgelist, iso_nodes)
     sum_dim = 0
