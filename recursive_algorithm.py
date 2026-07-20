@@ -1,56 +1,65 @@
 import numpy as np
+import networkx as nx
 import sympy as sp
-from maxph_matrix import rref_null, row_del, basis_mat, null_identity
+
+from maxph_matrix import rref_null, row_del, node_symbol, basis_mat, null_identity
 from dag_preprocess import dag_process
 
-def max_path_homology(edgelist: list[tuple[str, str]],
-                      *,
-                      iso_nodes: list[str] | None = None,
-                      calculate_basis: bool = True,) -> tuple[int, int, list[list[sp.Expr]] | None]:
+def max_path_homology(G: nx.DiGraph, calculate_basis: bool = False) -> tuple[int, int, list[list[sp.Expr]] | None]:
     """
-    This function computes the lp-dimensional path homology of the graph from the edge list, where lp is
-    the maximum length of the longest path in the graph. A basis of the lp-dimensional path homology 
-    will be calculated if specified.
+    Compute the maximal path homology of a finite DAG.
 
     Args:
-        edgelist (list[tuple[str, str]]): A list of tuples where each tuple represents a directed edge in the graph.
-        iso_nodes (list[str]):            A list of isolated nodes in the graph.
-        calculate_basis (bool):           A flag indicating whether to calculate the basis of the null space. Default is True.
+        G: 
+            A finite NetworkX directed acyclic graph.
+        calculate_basis: 
+            Whether to compute an explicit homology basis.
 
     Returns:
-        tuple[int, int, list[list[sp.Expr]] | None]:
-            lp (int):                        The order of the path homology group to be computed.
-            sum_dim (int):                   The sum of the highest order of the path homology group across all subgraphs.
-            basis (list[list[sp.Expr]] or None): A list of basis vectors if `calculate_basis` is True; otherwise, `None`.
+        lp:
+            The maximum directed path length of G.
+        betti:
+            The lp-dimensional Betti number.
+        basis:
+            A basis if requested; otherwise None.
     """
-    subgraph_dict, N, lp, num_subgraphs, graph_list = dag_process(edgelist, iso_nodes)
-    sum_dim = 0
+
+    (subgraph_dict, N, lp, num_subgraphs, graph_list) = dag_process(G)
+    betti = 0
     basis = [] if calculate_basis else None
-    if not subgraph_dict:
-        if lp != 0:
-            return lp, 0, basis
+
+    if lp == 0:
+        iso_nodes = list(G.nodes())
+        betti = len(iso_nodes) - 1
+
         if not calculate_basis:
-            return lp, num_subgraphs, basis
-        vertices = list(iso_nodes) if iso_nodes is not None else []
-        if len(vertices) <= 1:
-            return lp, num_subgraphs, basis
+            return lp, betti, basis
         else:
-            symbols = {vertex: sp.Symbol(str(vertex)) for vertex in vertices}
-            first_vertex = vertices[0]
-            basis = [[symbols[vertex] - symbols[first_vertex] for vertex in vertices[1:]]]
-            return lp, num_subgraphs, basis
+            if len(iso_nodes) <= 1:
+                return lp, betti, basis
+            else:
+                symbols = {node: node_symbol(node) for node in iso_nodes}
+                first_node = iso_nodes[0]
+                basis = [[symbols[node] - symbols[first_node] for node in iso_nodes[1:]]]
+                return lp, betti, basis
+    elif num_subgraphs == 0:
+        return lp, betti, basis
+
     assert len(N) == num_subgraphs
+
     for idx_subgraphs in range(num_subgraphs):
         if any(num == 1 for num in N[idx_subgraphs]):
             continue
+
         dim = N[idx_subgraphs][0] - 1
         V = np.vstack((-np.ones((1, dim), dtype = np.int8), np.identity(dim, dtype = np.int8)))    
         partition = {node: 1 for node in subgraph_dict[idx_subgraphs][0]}
 
         if calculate_basis:
             keys = list(partition.keys())
-            symbols = {key: sp.symbols(key) for key in keys}
+            symbols = {key: node_symbol(key) for key in keys}
             basis_iteration = sp.Matrix([symbols[key]- symbols[keys[0]] for key in keys[1:]]).T
+
         for layer_idx in range(1, lp + 1):  
             col_list, P, Status = [], {}, False
             V_rows = V.shape[0]
@@ -85,29 +94,38 @@ def max_path_homology(edgelist: list[tuple[str, str]],
                 break
             
             A = np.hstack(col_list)
+
             if Status:
                 V, dim = null_identity(P, index, A, dim)                 
             else:
                 V = rref_null(A)
                 dim = V.shape[1]
+
             if dim == 0:
                 break
             if calculate_basis:
                 basis_iteration = basis_iteration * basis_mat(col_list, P, V)
+
             partition = P
             
-        sum_dim += dim
+        betti += dim
+
         if calculate_basis and dim != 0:
             basis.extend(basis_iteration.tolist())
-    
-    return lp, sum_dim, basis
+
+    return lp, betti, basis
 
 if __name__ == "__main__":
-    edgelist = [('a0', 'b2'), ('a0', 'b3'), ('a1', 'b2'), ('a1', 'b3'), ('b4', 'd1'), ('a1', 'c1'), ('b0', 'c0'), ('b0', 'c1'), 
-                ('b1', 'c0'), ('b1', 'c1'), ('b2', 'c2'), ('b2', 'c3'), ('b3', 'c2'), ('b3', 'c3'), ('b4', 'c4'), ('b4', 'c5'), 
-                ('b5', 'c4'), ('b5', 'c5'), ('b0', 'c2'), ('b0', 'c3'), ('b1', 'c2'), ('b1', 'c3'), ('b4', 'c2'), ('b4', 'c3'), 
-                ('b5', 'c2'), ('b5', 'c3'), ('c0', 'd0'), ('c0', 'd1'), ('c1', 'd0'), ('c1', 'd1'), ('c4', 'd2'), ('c4', 'd3'), 
-                ('c5', 'd2'), ('c5', 'd3')]
 
-    lp, sum_dim, basis = max_path_homology(edgelist, calculate_basis = True)
-    print(f"lp:{lp},\nsum_dim:{sum_dim},\nbasis:{basis}\n")
+    edgelist = [('a0', 'b2'), ('a0', 'b3'), ('a1', 'b2'), ('a1', 'b3'), 
+                ('a1', 'c1'), ('b0', 'c0'), ('b0', 'c1'), ('b1', 'c0'), 
+                ('b1', 'c1'), ('b2', 'c2'), ('b2', 'c3'), ('b3', 'c2'), 
+                ('b3', 'c3'), ('b4', 'c4'), ('b4', 'c5'), ('b5', 'c4'), 
+                ('b5', 'c5'), ('b0', 'c2'), ('b0', 'c3'), ('b1', 'c2'), 
+                ('b1', 'c3'), ('b4', 'c2'), ('b4', 'c3'), ('b5', 'c2'), 
+                ('b5', 'c3'), ('c0', 'd0'), ('c0', 'd1'), ('c1', 'd0'), 
+                ('c1', 'd1'), ('c4', 'd2'), ('c4', 'd3'), ('c5', 'd2'), 
+                ('c5', 'd3')]
+    G = nx.DiGraph(edgelist)
+    lp, betti, basis = max_path_homology(G, calculate_basis = True)
+    print(f"lp = {lp},\nbetti = {betti},\nbasis = {basis}\n")

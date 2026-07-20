@@ -49,12 +49,6 @@ def rref_null(matrix: np.ndarray[np.int8]) -> np.ndarray[np.int8]:
             if rref[i, c] != 0:
                 rref[i] -= rref[i, c] * rref[r]
 
-    for i in range(rows):
-        for j in range(cols):
-            if abs(rref[i, j]) > 1:
-                print(f"wrong matrix: {rref[max(i - 5, 0):min(i + 5, rows), max(j - 5, 0):min(j + 5, cols)]}, full matrix: {rref}, i = {i}, j = {j}")
-                raise ValueError("the matrix has value exceeding 1 or -1.")
-
     null_basis = []
     for c in range(cols):
         if c not in pivot_col_indices:
@@ -66,11 +60,7 @@ def rref_null(matrix: np.ndarray[np.int8]) -> np.ndarray[np.int8]:
 
     null_space = np.array(null_basis, dtype = np.int8)
     null_matrix = np.delete(null_space, list(pivot_col_indices.keys()), axis = 1) 
-    for i in range(null_matrix.shape[0]):
-        for j in range(null_matrix.shape[1]):
-            if abs(null_matrix[i, j]) > 1:
-                print(f"wrong matrix: {null_matrix[max(i - 3, 0):min(i + 3, null_matrix.shape[0]), max(j - 3, 0):min(j + 3, null_matrix.shape[1])]}, i = {i}, j = {j}")
-                raise ValueError("the matrix has value exceeding 1 or -1.")
+
     return null_matrix
 
 def row_del(matrix: np.ndarray[np.int8], partition_rule: dict[str, int], keys: list[str]) -> np.ndarray[np.int8]:
@@ -103,17 +93,18 @@ def row_del(matrix: np.ndarray[np.int8], partition_rule: dict[str, int], keys: l
         n1 = sum(1 for i in range(reduced_matrix.shape[0]) if reduced_matrix[i, j] == 1)
         n2 = sum(1 for i in range(reduced_matrix.shape[0]) if reduced_matrix[i, j] == -1)
         max_n1, max_n2 = max(max_n1, n1), max(max_n2, n2)
-        if n1 >= 2 and n2 >= 2:
-            print(f"This matrix has column {j} with {n1} 1s and {n2} -1s. So far max_n1 = {max_n1}, max_n2 = {max_n2}.")
-        for i in range(reduced_matrix.shape[0]):
-            if abs(reduced_matrix[i, j]) > 1:
-                print(f"wrong matrix: {reduced_matrix[max(i - 3, 0):min(i + 3, reduced_matrix.shape[0]), max(j - 3, 0):min(j + 3, reduced_matrix.shape[1])]}, i = {i}, j = {j}")
-                raise ValueError("the matrix has value exceeding 1 or -1.")
+
     return reduced_matrix
+
+def node_symbol(node) -> sp.Symbol:
+    return sp.Symbol(str(node), commutative=False)
 
 def basis_mat(A_x_list: np.ndarray[np.int8], partition: dict[str, int], null_matrix: np.ndarray[np.int8]) -> sp.Matrix:
     """
-    Generate a symbolic matrix for updating the basis of the null space.
+    Generate a symbolic matrix for updating a path-homology basis.
+
+    Every vertex is represented by a noncommutative symbol, so matrix 
+        multiplication preserves the order of vertices along a path.
 
     Args:
         A_x_list (np.ndarray[np.int8]):    The input matrix.
@@ -130,7 +121,7 @@ def basis_mat(A_x_list: np.ndarray[np.int8], partition: dict[str, int], null_mat
     for key, count in partition.items():
         if count != 0:
             mat_mul = A_x_list[A_idx] @ null_matrix[current_row_idx: current_row_idx + count, :] 
-            symbol_matrix += sp.Symbol(key) * sp.Matrix(mat_mul)
+            symbol_matrix += node_symbol(key) * sp.Matrix(mat_mul)
             current_row_idx += count
             A_idx += 1
 

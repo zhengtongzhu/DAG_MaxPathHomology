@@ -1,7 +1,9 @@
 import networkx as nx
-from collections import deque
 
-def layer_dict(G: nx.DiGraph) -> dict[int, set[str]]:
+from collections import deque
+from collections.abc import Hashable
+
+def layer_dict(G: nx.DiGraph) -> dict[int, set[Hashable]]:
     """
     Label the nodes of a stratified graph. 
     The key is the depth of the layer, and the corresponding value is the set of nodes in that layer.
@@ -104,60 +106,41 @@ def prune(G: nx.DiGraph) -> nx.DiGraph:
 
     return G_prune
 
-def dag_process(edgelist: list[tuple[str, str]], iso_nodes: list[str] | None = None) -> tuple[list[dict[int, set[str]]], list[list[int]], int, int, list[nx.DiGraph]]:
+def dag_process(G: nx.DiGraph) -> tuple[list[dict[int, set[Hashable]]], list[list[int]], int, int, list[nx.DiGraph],]:
     """
-    This function takes an edgelist representing a DAG without multi-edges, dividing it into subgraphs 
-    that are equivalent for calculating maximal path homology.
+    Preprocess a finite DAG for maximal path-homology computation.
 
-    Args:
-        edgelist (list[tuple[str, str]]): A list of tuples where each tuple represents a directed edge in the graph.
-        iso_nodes (list[str]):            A list of isolated nodes of the graph.
-
-    Returns:
-        Tuple:
-            subgraph_dict (list[dict[int, set[str]]]): A list of dictionaries where each dictionary represents the nodes grouped by 
-                                                       their layer number within a subgraph. The keys are the layer numbers and 
-                                                       the values are sets of nodes in the corresponding layers.
-            node_counts (list[list[int]]):             A list of lists, where each inner list contains the number of nodes at each 
-                                                       layer in the corresponding subgraph.
-            lp (int):                                  The length of the longest path identified in the original graph.
-            num_graph (int):                           The total number of stratified weakly connected subgraphs generated after processing.
-            graph_list (list[nx.DiGraph]):             A list of directed subgraphs, each representing weakly connected components 
-                                                       of the pruned original graph.
+    For positive maximum path length, construct G_*, recursively
+    prune it, and separate the remaining weakly connected components.
     """
-    if len(edgelist) != len(set(edgelist)):
-        raise ValueError("Error: The graph has multi-edges.")
-    
-    G = nx.DiGraph(edgelist)
 
-    if iso_nodes is not None:
-        G.add_nodes_from(iso_nodes)
-    
+    if not isinstance(G, nx.DiGraph) or isinstance(G, nx.MultiDiGraph):
+        raise TypeError("G must be a NetworkX DiGraph.")
+
+    if G.number_of_nodes() == 0:
+        raise ValueError("G must contain at least one node.")
+
     if not nx.is_directed_acyclic_graph(G):
-        raise ValueError("Error: The graph must be a DAG.")
+        raise ValueError("G must be a DAG.")
 
-    lp = nx.dag_longest_path_length(G)
-    subgraph_dict, node_counts, graph_list, num_graph = [], [], [], 0
+    G_copy = G.copy()
+    lp = nx.dag_longest_path_length(G_copy)
 
     if lp == 0:
-        if iso_nodes is not None:
-            num_graph = G.number_of_nodes() - 1
-        return subgraph_dict, node_counts, lp, num_graph, graph_list
+        layers = {0: set(G_copy.nodes())}
+        return [layers], [[G_copy.number_of_nodes()]], lp, 1, [G_copy]
     else:
-        G_decompose = graph_decomposition(G)
-        G_prune = prune(G_decompose)
+        G_decomposed = graph_decomposition(G_copy)
+        G_pruned = prune(G_decomposed)
+        lp_pruned = nx.dag_longest_path_length(G_pruned)
 
-        if G_prune.number_of_nodes() == 0:
-            lp_new = 0
+        if lp != lp_pruned:
+            return [], [], lp, 0, []
         else:
-            lp_new = nx.dag_longest_path_length(G_prune)
-
-        if lp != lp_new:
-            print(f"The {lp}-th order path homology of the original graph is trivial.")
-            return subgraph_dict, node_counts, lp, num_graph, graph_list
-        else:
-            wcc = [G_prune.subgraph(c).copy() for c in nx.weakly_connected_components(G_prune)]
-            for subgraph in wcc:
+            components = [G_pruned.subgraph(c).copy() for c in nx.weakly_connected_components(G_pruned)]
+            subgraph_dict, node_counts, graph_list = [], [], []
+            num_graph = 0
+            for subgraph in components:
                 layers = layer_dict(subgraph)
                 num_graph += 1
                 s_dict = {K: layers[K] for K in sorted(layers)}
@@ -166,21 +149,29 @@ def dag_process(edgelist: list[tuple[str, str]], iso_nodes: list[str] | None = N
                 subgraph_dict.append(s_dict)
                 node_counts.append(node_count)
         
-            return subgraph_dict, node_counts, lp, num_graph, graph_list
+            return (subgraph_dict, node_counts, lp, num_graph, graph_list)
 
 # An example usage
 if __name__ == "__main__":
-    edgelist = [('a0', 'b2'), ('a0', 'b3'), ('a1', 'b2'), ('a1', 'b3'), ('b4', 'd1'), 
+    edgelist = [('a0', 'b2'), ('a0', 'b3'), ('a1', 'b2'), ('a1', 'b3'), 
                 ('a1', 'c1'), ('b0', 'c0'), ('b0', 'c1'), ('b1', 'c0'), ('b1', 'c1'), 
                 ('b2', 'c2'), ('b2', 'c3'), ('b3', 'c2'), ('b3', 'c3'), ('b4', 'c4'), 
                 ('b4', 'c5'), ('b5', 'c4'), ('b5', 'c5'), ('b0', 'c2'), ('b0', 'c3'), 
                 ('b1', 'c2'), ('b1', 'c3'), ('b4', 'c2'), ('b4', 'c3'), ('b5', 'c2'), 
                 ('b5', 'c3'), ('c0', 'd0'), ('c0', 'd1'), ('c1', 'd0'), ('c1', 'd1'), 
-                ('c4', 'd2'), ('c4', 'd3'), ('c5', 'd2'), ('c5', 'd3'), ('a2', 'b4')]
+                ('c4', 'd2'), ('c4', 'd3'), ('c5', 'd2'), ('c5', 'd3')]
 
     G = nx.DiGraph(edgelist)
     lp = nx.dag_longest_path_length(G)
 
-    print(f"original graph:{G.edges()},\n number of edges = {G.number_of_edges()},\n lp:{lp}\n")
-    subgrph_dict, node_counts, lp, num_graph, graph_list = dag_process(edgelist)
+    print(f"original graph:{G.edges()},\n number of edges = {G.number_of_edges()},\n max path length:{lp}\n")
+    (subgrph_dict, node_counts, lp, num_graph, graph_list) = dag_process(G)
     print(f"subgrph_dict:{subgrph_dict},\n node_counts:{node_counts},\n lp:{lp},\n num_graph:{num_graph},\n graph_list:{graph_list}\n")
+
+    iso_nodes = ['a0', 'a1', 'a2', 'b0', 'b1', 'b2', 'b3', 'b4', 'b5', 'c0', 'c1', 'c2', 'c3', 'c4', 'c5', 'd0', 'd1', 'd2', 'd3']
+    G1 = nx.DiGraph()
+    G1.add_nodes_from(iso_nodes)
+    lp1 = nx.dag_longest_path_length(G1)
+    print(f"original graph:{G1.edges() if G1.edges() else G1.nodes()},\n number of edges = {G1.number_of_edges()},\n max path length:{lp1}\n")
+    (subgrph_dict1, node_counts1, lp1, num_graph1, graph_list1) = dag_process(G1)
+    print(f"subgrph_dict:{subgrph_dict1},\n node_counts:{node_counts1},\n lp:{lp1},\n num_graph:{num_graph1},\n graph_list:{graph_list1}\n")
