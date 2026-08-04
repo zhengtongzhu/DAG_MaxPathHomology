@@ -151,7 +151,7 @@ def dag_process(G: nx.DiGraph) -> tuple[list[dict[int, set[Hashable]]], list[lis
         
             return (subgraph_dict, node_counts, lp, num_graph, graph_list)
 
-# An example usage
+# Example usage
 if __name__ == "__main__":
     edgelist = [('a0', 'b2'), ('a0', 'b3'), ('a1', 'b2'), ('a1', 'b3'), 
                 ('a1', 'c1'), ('b0', 'c0'), ('b0', 'c1'), ('b1', 'c0'), ('b1', 'c1'), 
@@ -160,13 +160,11 @@ if __name__ == "__main__":
                 ('b1', 'c2'), ('b1', 'c3'), ('b4', 'c2'), ('b4', 'c3'), ('b5', 'c2'), 
                 ('b5', 'c3'), ('c0', 'd0'), ('c0', 'd1'), ('c1', 'd0'), ('c1', 'd1'), 
                 ('c4', 'd2'), ('c4', 'd3'), ('c5', 'd2'), ('c5', 'd3')]
-
     G = nx.DiGraph(edgelist)
     lp = nx.dag_longest_path_length(G)
-
     print(f"original graph:{G.edges()},\n number of edges = {G.number_of_edges()},\n max path length:{lp}\n")
     (subgrph_dict, node_counts, lp, num_graph, graph_list) = dag_process(G)
-    print(f"subgrph_dict:{subgrph_dict},\n node_counts:{node_counts},\n lp:{lp},\n num_graph:{num_graph},\n graph_list:{graph_list}\n")
+    print(f"subgrph list:{subgrph_dict},\n node counts:{node_counts},\n lp:{lp},\n number of subgraphs:{num_graph},\n graph list:{graph_list}\n")
 
     iso_nodes = ['a0', 'a1', 'a2', 'b0', 'b1', 'b2', 'b3', 'b4', 'b5', 'c0', 'c1', 'c2', 'c3', 'c4', 'c5', 'd0', 'd1', 'd2', 'd3']
     G1 = nx.DiGraph()
@@ -174,4 +172,4 @@ if __name__ == "__main__":
     lp1 = nx.dag_longest_path_length(G1)
     print(f"original graph:{G1.edges() if G1.edges() else G1.nodes()},\n number of edges = {G1.number_of_edges()},\n max path length:{lp1}\n")
     (subgrph_dict1, node_counts1, lp1, num_graph1, graph_list1) = dag_process(G1)
-    print(f"subgrph_dict:{subgrph_dict1},\n node_counts:{node_counts1},\n lp:{lp1},\n num_graph:{num_graph1},\n graph_list:{graph_list1}\n")
+    print(f"subgrph list:{subgrph_dict1},\n node counts:{node_counts1},\n lp:{lp1},\n number of subgraphs:{num_graph1},\n graph_list:{graph_list1}\n")

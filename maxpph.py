@@ -5,7 +5,7 @@ import networkx as nx
 import matplotlib.pyplot as plt
 
 from tqdm import tqdm
-from experiment_func import random_stratified
+from simulation.experiment_functions import random_stratified
 from recursive_algorithm import max_path_homology
 
 def persistent_homology(nodes_per_layer: list[int], edges_between_layers: list[int], seed: int = None) -> None:
@@ -41,8 +41,8 @@ def persistent_homology(nodes_per_layer: list[int], edges_between_layers: list[i
             G_threshold.add_edges_from(edges)
 
             current_lp, betti, _ = max_path_homology(G_threshold, calculate_basis = False)
-
             thresholds.append(threshold)
+
             if current_lp == lp:
                 betti_numbers.append(betti)
             else:
@@ -62,8 +62,8 @@ def persistent_homology(nodes_per_layer: list[int], edges_between_layers: list[i
     plt.plot(thresholds, betti_numbers)
     plt.xlabel('t')
     plt.ylabel('Betti Number')
-    #plt.savefig('4_10_10_10 persistent_homology standard uniform weights.pdf', bbox_inches='tight')
-    plt.show()
+    plt.savefig('4_10_10_10 persistent_homology standard uniform weights.pdf', bbox_inches='tight')
+    #plt.show()
     plt.clf()
 
 if __name__ == '__main__':

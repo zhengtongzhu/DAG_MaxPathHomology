@@ -5,7 +5,61 @@
 import networkx as nx
 import numpy as np
 from sympy import Matrix
-from maxph_matrix import rref_null
+
+def rref_null(matrix: np.ndarray[np.int8]) -> np.ndarray[np.int8]:
+    """
+    This function calculates the null space of a given matrix by first converting it to its 
+    Reduced Row Echelon Form (RREF). The input matrix consists of elements in {-1, 0, 1},
+    and three matrix row operations are used: exchange any two rows, multiply a row by -1, and
+    add one row to another to cancel the nonzero entries in the pivot column.
+
+    Args:
+        matrix (np.ndarray[np.int8]): The input matrix for which the null space is to be computed.
+
+    Returns:
+        null_matrix (np.ndarray[np.int8]): The null space of the input matrix.
+    """
+    if matrix.size == 0:
+        return np.array([], dtype = np.int8)
+
+    rref = matrix.copy()
+    rows, cols = rref.shape
+    r, pivot_col_indices = 0, {}
+    for c in range(cols):
+        if r >= rows:
+            break        
+        pivot = np.nonzero(rref[r:, c])[0]
+        if len(pivot) == 0:
+            continue
+        pivot_1st = pivot[0] + r
+        if pivot_1st != r:
+            rref[[r, pivot_1st]] = rref[[pivot_1st, r]] 
+        if rref[r, c] < 0:
+            rref[r] *= -1
+        for i in range(r + 1, rows):
+            if rref[i, c] != 0:
+                rref[i] -= rref[i, c] * rref[r]  
+        pivot_col_indices[c] = r
+        r += 1
+
+    for c, r in reversed(pivot_col_indices.items()):
+        for i in range(r):
+            if rref[i, c] != 0:
+                rref[i] -= rref[i, c] * rref[r]
+
+    null_basis = []
+    for c in range(cols):
+        if c not in pivot_col_indices:
+            vector = np.zeros(cols, dtype = np.int8)
+            vector[c] = 1
+        else:
+            vector = -rref[pivot_col_indices[c]] 
+        null_basis.append(vector)
+
+    null_space = np.array(null_basis, dtype = np.int8)
+    null_matrix = np.delete(null_space, list(pivot_col_indices.keys()), axis = 1) 
+
+    return null_matrix
 
 def R_path(G, cutoff):
     """
