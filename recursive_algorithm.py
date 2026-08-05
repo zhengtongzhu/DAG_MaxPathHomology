@@ -240,7 +240,6 @@ if __name__ == "__main__":
     import random
     import time
 
-    #nodes_per_layer = [4, 10, 10, 10, 10, 5, 5, 5, 5, 5]
     nodes_per_layer = [4, 10, 10, 10]
     density = 0.9
     seed = 1
@@ -283,8 +282,8 @@ if __name__ == "__main__":
     actual_depth = nx.dag_longest_path_length(graph)
 
     print("=" * 72)
-    print("Recursive-algorithm example")
-    print("=" * 72)
+    print("Recursive-algorithm example 1")
+    print("-" * 72)
     print(f"nodes_per_layer = {nodes_per_layer}")
     print(f"density         = {density}")
     print(f"seed            = {seed}")
@@ -294,26 +293,21 @@ if __name__ == "__main__":
     print(f"expected_depth  = {expected_depth}")
     print(f"actual_depth    = {actual_depth}")
     print(f"calculate_basis = {calculate_basis}")
-    print("=" * 72)
+    print("-" * 72)
 
     start_time = time.perf_counter()
     lp, betti, basis = max_path_homology(graph, calculate_basis=calculate_basis, report_sparsity=True)
     end_time = time.perf_counter()
     elapsed_time = end_time - start_time
 
-    print("=" * 72)
-    print("Results")
-    print("=" * 72)
+    print("-" * 72)
+    print("Results:")
     print(f"lp              = {lp}")
     print(f"betti           = {betti}")
     print(f"elapsed_seconds = {elapsed_time:.6f}")
-
-    #if calculate_basis:
-        #print(f"basis           = {basis}")
-
     print("=" * 72)
     print("Example 2")
-    print("=" * 72)
+    print("-" * 72)
     edgelist = [('a0', 'b2'), ('a0', 'b3'), ('a1', 'b2'), ('a1', 'b3'), 
                 ('a1', 'c1'), ('b0', 'c0'), ('b0', 'c1'), ('b1', 'c0'), 
                 ('b1', 'c1'), ('b2', 'c2'), ('b2', 'c3'), ('b3', 'c2'), 
