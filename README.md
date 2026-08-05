@@ -151,16 +151,16 @@ Here:
 
 For `calculate_basis == True` and `report_sparsity == True`, the outputs are:
 ```python
-subgraph=0, layer=0, V: shape=(4, 3), nnz=6, density=5.000000e-01, storage=0.000 MiB
-subgraph=0, layer=1, A: shape=(3, 5), nnz=6, density=4.000000e-01, storage=0.000 MiB
-subgraph=0, layer=1, V: shape=(5, 2), nnz=5, density=5.000000e-01, storage=0.000 MiB
-subgraph=0, layer=2, A: shape=(2, 4), nnz=4, density=5.000000e-01, storage=0.000 MiB
-subgraph=0, layer=2, V: shape=(4, 2), nnz=4, density=5.000000e-01, storage=0.000 MiB
-subgraph=1, layer=0, V: shape=(2, 1), nnz=2, density=1.000000e+00, storage=0.000 MiB
-subgraph=1, layer=1, A: shape=(1, 2), nnz=2, density=1.000000e+00, storage=0.000 MiB
-subgraph=1, layer=1, V: shape=(2, 1), nnz=2, density=1.000000e+00, storage=0.000 MiB
-subgraph=1, layer=2, A: shape=(1, 2), nnz=2, density=1.000000e+00, storage=0.000 MiB
-subgraph=1, layer=2, V: shape=(2, 1), nnz=2, density=1.000000e+00, storage=0.000 MiB
+subgraph=0, layer=0, V: shape=(4, 3), nnz=6, density=5.000000e-01, storage=0.000065 MiB
+subgraph=0, layer=1, A: shape=(3, 5), nnz=8, density=5.333333e-01, storage=0.000076 MiB
+subgraph=0, layer=1, V: shape=(5, 2), nnz=4, density=4.000000e-01, storage=0.000053 MiB
+subgraph=0, layer=2, A: shape=(2, 4), nnz=4, density=5.000000e-01, storage=0.000042 MiB
+subgraph=0, layer=2, V: shape=(4, 2), nnz=4, density=5.000000e-01, storage=0.000050 MiB
+subgraph=1, layer=0, V: shape=(2, 1), nnz=2, density=1.000000e+00, storage=0.000027 MiB
+subgraph=1, layer=1, A: shape=(1, 2), nnz=2, density=1.000000e+00, storage=0.000023 MiB
+subgraph=1, layer=1, V: shape=(2, 1), nnz=2, density=1.000000e+00, storage=0.000027 MiB
+subgraph=1, layer=2, A: shape=(1, 2), nnz=2, density=1.000000e+00, storage=0.000023 MiB
+subgraph=1, layer=2, V: shape=(2, 1), nnz=2, density=1.000000e+00, storage=0.000027 MiB
 
 lp    = 2,
 betti = 3,
